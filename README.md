@@ -124,3 +124,7 @@ no current report.
   be used as-is in production — use a production WSGI server (e.g.
   Gunicorn or Waitress) and disable debug mode if you deploy this
   publicly.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
