@@ -112,6 +112,12 @@ pip install -r requirements-dev.txt
 pytest
 ```
 
+To see a coverage report:
+
+```bash
+pytest --cov=app --cov=metar_decoder --cov-report=term-missing
+```
+
 ## Project structure
 
 ```
