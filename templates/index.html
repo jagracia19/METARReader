@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>METAR Reader &mdash; Plain-English Airport Weather</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main class="page">
+        <header class="page-header">
+            <h1>METAR Reader</h1>
+            <p class="subtitle">Type an airport code and get its weather in plain English.</p>
+        </header>
+
+        <form class="search-form" method="post" action="{{ url_for('index') }}">
+            <input
+                type="text"
+                name="airport_code"
+                placeholder="e.g. KHIO, KJFK, KDEN"
+                value="{{ airport_code }}"
+                maxlength="4"
+                autocomplete="off"
+                autofocus
+            >
+            <button type="submit">Get Weather</button>
+        </form>
+
+        {% if error %}
+        <div class="alert alert-error">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        {% if report %}
+        <section class="result-card">
+            <div class="result-header">
+                <div>
+                    <h2>{{ report.station }}</h2>
+                    {% if report.station_name %}
+                    <p class="station-name">{{ report.station_name }}</p>
+                    {% endif %}
+                </div>
+                {% if report.flight_category %}
+                <span class="badge badge-{{ report.flight_category|lower }}">{{ report.flight_category }}</span>
+                {% endif %}
+            </div>
+
+            <p class="summary">{{ report.summary }}</p>
+
+            <dl class="details-grid">
+                <div class="detail">
+                    <dt>Temperature</dt>
+                    <dd>
+                        {% if report.temperature_f is not none %}
+                            {{ report.temperature_f }}&deg;F ({{ report.temperature_c }}&deg;C)
+                        {% else %}
+                            Not reported
+                        {% endif %}
+                    </dd>
+                </div>
+                <div class="detail">
+                    <dt>Dew Point</dt>
+                    <dd>
+                        {% if report.dewpoint_f is not none %}
+                            {{ report.dewpoint_f }}&deg;F ({{ report.dewpoint_c }}&deg;C)
+                        {% else %}
+                            Not reported
+                        {% endif %}
+                    </dd>
+                </div>
+                <div class="detail">
+                    <dt>Wind</dt>
+                    <dd>{{ report.wind }}</dd>
+                </div>
+                <div class="detail">
+                    <dt>Visibility</dt>
+                    <dd>{{ report.visibility }}</dd>
+                </div>
+                <div class="detail">
+                    <dt>Sky Conditions</dt>
+                    <dd>
+                        <ul class="plain-list">
+                        {% for line in report.sky_conditions %}
+                            <li>{{ line }}</li>
+                        {% endfor %}
+                        </ul>
+                    </dd>
+                </div>
+                {% if report.weather_phrases %}
+                <div class="detail">
+                    <dt>Weather</dt>
+                    <dd>
+                        <ul class="plain-list">
+                        {% for line in report.weather_phrases %}
+                            <li>{{ line }}</li>
+                        {% endfor %}
+                        </ul>
+                    </dd>
+                </div>
+                {% endif %}
+                <div class="detail">
+                    <dt>Pressure</dt>
+                    <dd>{{ report.pressure or "Not reported" }}</dd>
+                </div>
+                <div class="detail">
+                    <dt>Flight Category</dt>
+                    <dd>{{ report.flight_category_text }}</dd>
+                </div>
+                <div class="detail">
+                    <dt>Observed</dt>
+                    <dd>{{ report.observed_at }}</dd>
+                </div>
+            </dl>
+
+            <details class="raw-metar">
+                <summary>Show raw METAR</summary>
+                <code>{{ report.raw_metar }}</code>
+            </details>
+        </section>
+        {% endif %}
+    </main>
+</body>
+</html>
