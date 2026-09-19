@@ -101,17 +101,33 @@ This returns a JSON object with the same fields shown on the web page
 `404` with an `"error"` message if the airport code is invalid or has
 no current report.
 
+## Running the tests
+
+Unit tests cover the METAR decoding logic (using mock weather records)
+and the Flask routes (with the decoder mocked out, so no real network
+calls are made).
+
+```bash
+pip install -r requirements-dev.txt
+pytest
+```
+
 ## Project structure
 
 ```
 .
-├── app.py               # Flask routes (web form + JSON API)
-├── metar_decoder.py     # Fetches METARs and decodes them into plain English
-├── requirements.txt     # Python dependencies
+├── app.py                    # Flask routes (web form + JSON API)
+├── metar_decoder.py          # Fetches METARs and decodes them into plain English
+├── requirements.txt          # Python dependencies
+├── requirements-dev.txt      # Additional dependencies for running tests
+├── conftest.py                # Shared pytest fixtures (Flask test client)
+├── tests/
+│   ├── test_metar_decoder.py # Decoding logic tests, using mock METAR records
+│   └── test_app.py           # Flask route tests
 ├── templates/
-│   └── index.html       # Search form and results page
+│   └── index.html            # Search form and results page
 └── static/
-    └── style.css         # Page styling
+    └── style.css              # Page styling
 ```
 
 ## Notes
